@@ -1,0 +1,176 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #010101;
+    overflow: hidden;
+    font-family: 'Montserrat', sans-serif;
+    color: #fff;
+    /* Cursor para indicar que se puede rotar */
+    cursor: grab;
+}
+
+body:active {
+    cursor: grabbing;
+}
+
+#canvas-container {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 1;
+}
+
+/* Background gradient to simulate the deep space glow from the image */
+#canvas-container::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    /* Top-left yellow glow exactly like the image */
+    background: radial-gradient(circle at 25% 15%, rgba(200, 200, 0, 0.25) 0%, rgba(0, 0, 0, 0) 60%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* El texto central */
+#center-text {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: #fffae6; /* Soft yellowish white */
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.9), 0 0 25px #ffcc00, 0 0 50px #ffaa00;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+.floating-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.floating-text {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #fffae6;
+    text-shadow: 0 0 6px #ffcc00, 0 0 12px #ff9900, 0 3px 4px rgba(0,0,0,0.9);
+    margin-top: 15px;
+    white-space: nowrap;
+}
+
+.bouquet {
+    position: relative;
+    width: 80px; height: 80px;
+}
+
+.sunflower-svg {
+    position: absolute;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.7));
+}
+
+/* Área invisible para hacer clic en el centro */
+#heart-click-area {
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    cursor: pointer;
+    pointer-events: auto; /* IMPORTANTE: Para que pueda recibir clics a través del CSS2DRenderer */
+    z-index: 100;
+}
+
+/* Estilos del Modal */
+#dedication-modal {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+}
+
+#dedication-modal.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-content {
+    position: relative;
+    width: 85%;
+    max-width: 600px;
+    background-color: #1a160c; /* Fondo oscuro y elegante */
+    border: 2px solid #ffcc00;
+    border-radius: 20px;
+    padding: 50px 40px;
+    box-shadow: 0 0 40px rgba(255, 204, 0, 0.4);
+    color: #fffae6;
+    text-align: center;
+    transform: scale(0.8);
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    overflow: hidden;
+}
+
+#dedication-modal.active .modal-content {
+    transform: scale(1);
+}
+
+/* Patrón de girasoles semi-transparentes de fondo */
+.modal-content::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><g transform="scale(0.7) translate(20, 20)"><path d="M50 50 C45 25, 40 5, 50 0 C60 5, 55 25, 50 50 Z" fill="%23ffcc00" opacity="0.1" transform="rotate(0 50 50)"/><path d="M50 50 C45 25, 40 5, 50 0 C60 5, 55 25, 50 50 Z" fill="%23ffcc00" opacity="0.1" transform="rotate(45 50 50)"/><path d="M50 50 C45 25, 40 5, 50 0 C60 5, 55 25, 50 50 Z" fill="%23ffcc00" opacity="0.1" transform="rotate(90 50 50)"/><path d="M50 50 C45 25, 40 5, 50 0 C60 5, 55 25, 50 50 Z" fill="%23ffcc00" opacity="0.1" transform="rotate(135 50 50)"/><path d="M50 50 C45 25, 40 5, 50 0 C60 5, 55 25, 50 50 Z" fill="%23ffcc00" opacity="0.1" transform="rotate(180 50 50)"/><path d="M50 50 C45 25, 40 5, 50 0 C60 5, 55 25, 50 50 Z" fill="%23ffcc00" opacity="0.1" transform="rotate(225 50 50)"/><path d="M50 50 C45 25, 40 5, 50 0 C60 5, 55 25, 50 50 Z" fill="%23ffcc00" opacity="0.1" transform="rotate(270 50 50)"/><path d="M50 50 C45 25, 40 5, 50 0 C60 5, 55 25, 50 50 Z" fill="%23ffcc00" opacity="0.1" transform="rotate(315 50 50)"/><circle cx="50" cy="50" r="15" fill="%23b8860b" opacity="0.1"/></g></svg>');
+    background-size: 100px 100px;
+    background-repeat: repeat;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.modal-body {
+    position: relative;
+    z-index: 1;
+}
+
+.modal-body h2 {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 2.8rem;
+    color: #ffcc00;
+    margin-top: 0;
+    margin-bottom: 25px;
+    text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+}
+
+.modal-body p {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.15rem;
+    line-height: 1.8;
+    margin-bottom: 20px;
+}
+
+#close-modal {
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    background: none;
+    border: none;
+    color: #ffcc00;
+    font-size: 2.5rem;
+    cursor: pointer;
+    z-index: 10;
+    transition: text-shadow 0.3s;
+    outline: none;
+}
+
+#close-modal:hover {
+    text-shadow: 0 0 15px #ffcc00;
+}
